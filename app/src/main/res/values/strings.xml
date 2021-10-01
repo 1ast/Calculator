@@ -1,0 +1,62 @@
+<resources>
+    <string name="app_name">Calculator</string>
+    <string name="dot">.</string>
+    <string name="zero">0</string>
+    <string name="one">1</string>
+    <string name="two">2</string>
+    <string name="three">3</string>
+    <string name="four">4</string>
+    <string name="five">5</string>
+    <string name="six">6</string>
+    <string name="seven">7</string>
+    <string name="eight">8</string>
+    <string name="nine">9</string>
+    <string name="plus">+</string>
+    <string name="minus">–</string>
+    <string name="clear">C</string>
+    <string name="multiply">\u00D7</string>
+    <string name="divide">\u00F7</string>
+    <string name="sqrt">\u221A</string>
+    <string name="percent">%</string>
+    <string name="delete">del</string>
+    <string name="equal">=</string>
+    <string name="sample">Sample text0123456789</string>
+    <string name="right">right</string>
+    <string name="left">left</string>
+    <string name="slider">slider</string>
+    <string name="logarithm">logarithm</string>
+    <string name="lg">lg</string>
+    <string name="deg">x\u02B8</string>
+    <string name="degree">degree</string>
+    <string name="square">square</string>
+    <string name="sqr">x\u00B2</string>
+    <string name="factorial">factorial</string>
+    <string name="fact">x!</string>
+    <string name="left_bracket">left bracket</string>
+    <string name="lb">(</string>
+    <string name="right_bracket">right bracket</string>
+    <string name="rb">)</string>
+    <string name="opposite">opposite</string>
+    <string name="opp">1/x</string>
+    <string name="pi">pi</string>
+    <string name="piName">\u03C0</string>
+    <string name="sinus">sinus</string>
+    <string name="sin">sin</string>
+    <string name="cosine">cosine</string>
+    <string name="cos">cos</string>
+    <string name="tangent">tangent</string>
+    <string name="tg">tg</string>
+    <string name="cotangent">cotangent</string>
+    <string name="ctg">ctg</string>
+    <string name="arc_sinus">arc sinus</string>
+    <string name="arcsin">sin\u207B\u00B9</string>
+
+    <string name="arc_cosine">arc cosine</string>
+    <string name="arccos">cos\u207B\u00B9</string>
+
+    <string name="arc_tangent">arc tangent</string>
+    <string name="arctg">tg\u207B\u00B9</string>
+
+    <string name="arc_cotangent">arc cotangent</string>
+    <string name="arcctg">ctg\u207B\u00B9</string>
+</resources>
