@@ -34,7 +34,15 @@ class ButtonsLogic(val editText: MaterialTextView, val editScrollView: Horizonta
             else
                 text += number.toString()
             editText.text = text
+            val res = CalculatorParser.calculate(editText.text.toString())
+            text = if((res).toString() == "${res.toInt()}.0"){
+                "=${res.toInt()}"
+            } else{
+                "=${res}"
+            }
+            resultText.text = text
             toEnd(editScrollView)
+            toEnd(resultScrollView)
         }
     }
 
@@ -47,6 +55,8 @@ class ButtonsLogic(val editText: MaterialTextView, val editScrollView: Horizonta
         button.setOnClickListener {
             editText.text = "0"
             resultText.text = "=0"
+            toEnd(editScrollView)
+            toEnd(resultScrollView)
             secondaryActionsUsed = false
             actionButtonUsed = false
         }
@@ -75,13 +85,24 @@ class ButtonsLogic(val editText: MaterialTextView, val editScrollView: Horizonta
      */
     fun setDeleteLogic(button: FloatingActionButton) {
         button.setOnClickListener {
+
             if (editText.text.length == 1){
                 editText.text = "0"
+                resultText.text = "=0"
                 return@setOnClickListener
             }
             if (editText.text.isNotEmpty()) {
                 editText.text =
                     editText.text.subSequence(0, editText.text.length - 1)
+                if (("+-*/^").indexOf(editText.text[editText.text.length-1]) == -1) {
+                    val res = CalculatorParser.calculate(editText.text.toString())
+                    val text = if ((res).toString() == "${res.toInt()}.0") {
+                        "=${res.toInt()}"
+                    } else {
+                        "=${res}"
+                    }
+                    resultText.text = text
+                }
             }
         }
 
@@ -93,11 +114,16 @@ class ButtonsLogic(val editText: MaterialTextView, val editScrollView: Horizonta
      */
     fun setEqualLogic(button: FloatingActionButton){
         button.setOnClickListener {
-            val text = resultText.text.subSequence(1, resultText.text.length)
-            resultText.text = editText.text
-            editText.text = text
-            toEnd(resultScrollView)
-            toEnd(editScrollView)
+            if(resultText.text.contains('=')) {
+                val text = resultText.text.subSequence(1, resultText.text.length)
+                resultText.text = editText.text
+                editText.text = text
+                toEnd(resultScrollView)
+                toEnd(editScrollView)
+            } else {
+                editText.text = "0"
+                resultText.text = "=0"
+            }
         }
     }
 
@@ -114,20 +140,25 @@ class ButtonsLogic(val editText: MaterialTextView, val editScrollView: Horizonta
      *
      */
     fun setMinusLogic(){
-
+        val text = "${editText.text.toString()}-"
+        editText.text = text
     }
 
     /**
      *
      */
     fun setMultiplyLogic(){
-
+        val text = "${editText.text.toString()}*"
+        editText.text = text
     }
 
     /**
      *
      */
     fun setDivideLogic(){
-
+        val text = "${editText.text.toString()}/"
+        editText.text = text
     }
+
+
 }
