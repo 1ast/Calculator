@@ -2,6 +2,8 @@ package com.forkis.calculator
 
 import android.widget.HorizontalScrollView
 import com.forkis.calculator.MainActivity.Companion.toEnd
+import com.forkis.calculator.ResultGrammar.Companion.clearResult
+import com.forkis.calculator.ResultGrammar.Companion.clearResultFromType
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textview.MaterialTextView
 import java.util.*
@@ -12,14 +14,23 @@ import java.util.*
 class ButtonsLogic(val editText: MaterialTextView, val editScrollView: HorizontalScrollView,
                    val resultText: MaterialTextView, val resultScrollView: HorizontalScrollView) {
 
-    var actionButtonUsed = false
-    var secondaryActionsUsed = false
 
     var mainActions = listOf(Actions.Plus, Actions.Minus, Actions.Multiply, Actions.Divide)
     var secondaryActions = listOf(Actions.Sqrt, Actions.Percent, Actions.Dot, Actions.Lg, Actions.Sqr,
         Actions.Degree, Actions.Factorial, Actions.LeftBracket, Actions.RightBracket, Actions.Opposite,
         Actions.Pi, Actions.Sin, Actions.Cos, Actions.Tg, Actions.Ctg, Actions.Arcsin, Actions.Arccos,
         Actions.Arctg, Actions.Arcctg)
+
+
+
+    /**
+     * Return result with equal symbol
+     * @param str string, where need to add a equal symbol
+     * @return "=${your stroke}"
+     */
+    fun addEqual(str: String = "0"): String {
+        return "=$str"
+    }
 
     /**
      * Create logic for buttons with numbers
@@ -33,14 +44,11 @@ class ButtonsLogic(val editText: MaterialTextView, val editScrollView: Horizonta
                 text = number.toString()
             else
                 text += number.toString()
+
+            text = EditGrammar.checkInput(text)
             editText.text = text
-            val res = CalculatorParser.calculate(editText.text.toString())
-            text = if((res).toString() == "${res.toInt()}.0"){
-                "=${res.toInt()}"
-            } else{
-                "=${res}"
-            }
-            resultText.text = text
+            val res = addEqual(clearResult(text))
+            resultText.text = res
             toEnd(editScrollView)
             toEnd(resultScrollView)
         }
@@ -57,8 +65,6 @@ class ButtonsLogic(val editText: MaterialTextView, val editScrollView: Horizonta
             resultText.text = "=0"
             toEnd(editScrollView)
             toEnd(resultScrollView)
-            secondaryActionsUsed = false
-            actionButtonUsed = false
         }
     }
 

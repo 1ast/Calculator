@@ -120,6 +120,7 @@ class CalculatorParser {
         }
 
         fun calculate(input: String): Double {
+            if (input == "") return 0.0
             val output = getExpression(input)
             val res = counting(output)
             Log.d("CALCULATOR", res.toString())
