@@ -3,7 +3,6 @@ package com.forkis.calculator
 import android.widget.HorizontalScrollView
 import com.forkis.calculator.MainActivity.Companion.toEnd
 import com.forkis.calculator.ResultGrammar.Companion.clearResult
-import com.forkis.calculator.ResultGrammar.Companion.clearResultFromType
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textview.MaterialTextView
 import java.util.*
@@ -11,15 +10,10 @@ import java.util.*
 /**
  * Class, that initialise and work with button logic
  */
-class ButtonsLogic(val editText: MaterialTextView, val editScrollView: HorizontalScrollView,
-                   val resultText: MaterialTextView, val resultScrollView: HorizontalScrollView) {
+class ButtonsLogic(
+    private val editText: MaterialTextView, private val editScrollView: HorizontalScrollView,
+    private val resultText: MaterialTextView, private val resultScrollView: HorizontalScrollView) {
 
-
-    var mainActions = listOf(Actions.Plus, Actions.Minus, Actions.Multiply, Actions.Divide)
-    var secondaryActions = listOf(Actions.Sqrt, Actions.Percent, Actions.Dot, Actions.Lg, Actions.Sqr,
-        Actions.Degree, Actions.Factorial, Actions.LeftBracket, Actions.RightBracket, Actions.Opposite,
-        Actions.Pi, Actions.Sin, Actions.Cos, Actions.Tg, Actions.Ctg, Actions.Arcsin, Actions.Arccos,
-        Actions.Arctg, Actions.Arcctg)
 
 
 
@@ -28,7 +22,7 @@ class ButtonsLogic(val editText: MaterialTextView, val editScrollView: Horizonta
      * @param str string, where need to add a equal symbol
      * @return "=${your stroke}"
      */
-    fun addEqual(str: String = "0"): String {
+    private fun addEqual(str: String = "0"): String {
         return "=$str"
     }
 
@@ -80,8 +74,17 @@ class ButtonsLogic(val editText: MaterialTextView, val editScrollView: Horizonta
                 Actions.Minus -> setMinusLogic()
                 Actions.Multiply -> setMultiplyLogic()
                 Actions.Divide -> setDivideLogic()
+                Actions.Dot -> setDotLogic()
+                Actions.LeftBracket -> setLeftBracketLogic()
+                Actions.RightBracket -> setRightBracketLogic()
+                Actions.Degree -> setDegreeLogic()
+                Actions.Sqr -> setSqrLogic()
+                Actions.Sqrt -> setSqrtLogic()
                 else -> {}
+
             }
+            toEnd(resultScrollView)
+            toEnd(editScrollView)
         }
     }
 
@@ -101,15 +104,12 @@ class ButtonsLogic(val editText: MaterialTextView, val editScrollView: Horizonta
                 editText.text =
                     editText.text.subSequence(0, editText.text.length - 1)
                 if (("+-*/^").indexOf(editText.text[editText.text.length-1]) == -1) {
-                    val res = CalculatorParser.calculate(editText.text.toString())
-                    val text = if ((res).toString() == "${res.toInt()}.0") {
-                        "=${res.toInt()}"
-                    } else {
-                        "=${res}"
-                    }
-                    resultText.text = text
+                    val res = addEqual(clearResult(editText.text.toString()))
+                    resultText.text = res
                 }
             }
+            toEnd(resultScrollView)
+            toEnd(editScrollView)
         }
 
     }
@@ -124,47 +124,118 @@ class ButtonsLogic(val editText: MaterialTextView, val editScrollView: Horizonta
                 val text = resultText.text.subSequence(1, resultText.text.length)
                 resultText.text = editText.text
                 editText.text = text
-                toEnd(resultScrollView)
-                toEnd(editScrollView)
+
             } else {
                 editText.text = "0"
                 resultText.text = "=0"
+
             }
         }
+        toEnd(resultScrollView)
+        toEnd(editScrollView)
     }
 
     /**
      *
      */
-    fun setPlusLogic(){
-        val text = "${editText.text.toString()}+"
+    private fun setPlusLogic(){
+        var text = "${editText.text}+"
+        text = EditGrammar.oneAction(text)
+        text = EditGrammar.checkActionBracket(text)
         editText.text = text
-        
+
     }
 
     /**
      *
      */
-    fun setMinusLogic(){
-        val text = "${editText.text.toString()}-"
-        editText.text = text
-    }
-
-    /**
-     *
-     */
-    fun setMultiplyLogic(){
-        val text = "${editText.text.toString()}*"
+    private fun setMinusLogic(){
+        var text = "${editText.text}-"
+        text = EditGrammar.oneAction(text)
+        text = EditGrammar.checkActionBracket(text)
         editText.text = text
     }
 
     /**
      *
      */
-    fun setDivideLogic(){
-        val text = "${editText.text.toString()}/"
+    private fun setMultiplyLogic(){
+        var text = "${editText.text}*"
+        text = EditGrammar.oneAction(text)
+        text = EditGrammar.checkActionBracket(text)
+        editText.text = text
+    }
+
+    /**
+     *
+     */
+    private fun setDivideLogic(){
+        var text = "${editText.text}/"
+        text = EditGrammar.oneAction(text)
+        text = EditGrammar.checkActionBracket(text)
+        editText.text = text
+    }
+
+    private fun setLeftBracketLogic(){
+        var text = "${editText.text}"
+        text += if (text.last() in EditGrammar.actions){
+            "("
+        } else {
+            "*("
+        }
+
+        editText.text = text
+    }
+
+    private fun setRightBracketLogic(){
+        var text = "${editText.text}"
+        if (text.last() in EditGrammar.actions){
+            text = text.removeRange(text.length-1, text.length)
+            text += ")"
+        }
+        else {
+            text += ")"
+        }
+        editText.text = text
+    }
+
+    private fun setDotLogic(){
+        var text = "${editText.text}"
+        text = EditGrammar.checkPlaceDot(text)
+        if (!EditGrammar.checkNumberDots(text)) {
+            text += "."
+        }
+
         editText.text = text
     }
 
 
+    private fun setDegreeLogic(){
+        var text = "${editText.text}^("
+        text = EditGrammar.oneAction(text)
+        text = EditGrammar.checkActionBracket(text)
+        editText.text = text
+    }
+
+    fun setSqrLogic(){
+        var text = "${editText.text}^(2)"
+        text = EditGrammar.oneAction(text)
+        text = EditGrammar.checkActionBracket(text)
+        editText.text = text
+        val res = addEqual(clearResult(text))
+        resultText.text = res
+        toEnd(editScrollView)
+        toEnd(resultScrollView)
+    }
+
+    fun setSqrtLogic(){
+        var text = "${editText.text}^(1/2)"
+        text = EditGrammar.oneAction(text)
+        text = EditGrammar.checkActionBracket(text)
+        editText.text = text
+        val res = addEqual(clearResult(text))
+        resultText.text = res
+        toEnd(editScrollView)
+        toEnd(resultScrollView)
+    }
 }

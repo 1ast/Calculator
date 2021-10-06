@@ -7,7 +7,7 @@ class ResultGrammar {
          * Return result, that have double value where it needed
          * @return cleared from types result in string
          * */
-        fun clearResultFromType(text: String): String {
+        private fun clearResultFromType(text: String): String {
             val dirty = CalculatorParser.calculate(text)
             return if (dirty.toString() == "${dirty.toInt()}.0"){
                 "${dirty.toInt()}"
@@ -21,7 +21,7 @@ class ResultGrammar {
          * @param result stroke, that function checks on infinity
          * @return true if result = infinity
          */
-        fun isInfinity(result: String): Boolean{
+        private fun isInfinity(result: String): Boolean{
             return result == "Infinity"
         }
 
@@ -30,10 +30,63 @@ class ResultGrammar {
          * @param result stroke, that function checks on NaN errors
          * @return true if result has NaN error
          */
-        fun isNaN(result: String): Boolean{
+        private fun isNaN(result: String): Boolean{
             return result == "NaN"
         }
 
+        private fun addBrackets(result: String): String{
+            var lb = 0
+            var rb = 0
+
+            for (c in result){
+                if (c == '('){
+                    lb++
+                }
+                if (c == ')'){
+                    rb++
+                }
+            }
+            if (lb > rb){
+                return result + ")".repeat(lb-rb)
+            }
+            return result
+        }
+
+        fun clearLastAction(text: String): String{
+            var result = text
+            var i = result.length-1
+            while (i >= 0) {
+                if (result[i] !in EditGrammar.actions){
+                    break
+                }
+
+                if (result[i] in EditGrammar.actions){
+                    result = EditGrammar.removeCharAt(result, i)
+                }
+
+                i--
+            }
+
+            return result
+        }
+
+        fun clearBracketsResult(text: String): String {
+            var result = text
+            var i = result.length-1
+            while (i >= 0) {
+                if (result[i] != '('){
+                    break
+                }
+
+                if (result[i] == '('){
+                    result = EditGrammar.removeCharAt(result, i)
+                }
+
+                i--
+            }
+
+            return result
+        }
 
         /**
          * Clear result from type problems, infinity and NaN
@@ -41,7 +94,13 @@ class ResultGrammar {
          * @return cleared result
          */
         fun clearResult(text: String): String{
-            var result = clearResultFromType(text)
+            var result = clearBracketsResult(text)
+
+            result = addBrackets(result)
+            result = clearLastAction(result)
+
+            result = clearResultFromType(result)
+
             if(isInfinity(result)) result = "\u221E"
             if(isNaN(result)) result = "Error"
             return result
