@@ -239,7 +239,11 @@ class MainActivity : AppCompatActivity() {
          * @param scrollView scroll view, that need to be scrolled
          */
         fun toEnd(scrollView: HorizontalScrollView){
-            scrollView.postDelayed({scrollView.scrollBy(scrollView.right, 0)}, 10)
+            scrollView.postDelayed(object : Runnable {
+                override fun run() {
+                    scrollView.fullScroll(HorizontalScrollView.FOCUS_RIGHT)
+                }
+            }, 100L)
         }
     }
 

@@ -7,6 +7,12 @@ class EditGrammar {
     companion object {
         val actions = arrayOf('+', '-', '*', '/', '^')
         val numbers = arrayOf('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', '.')
+
+        /**
+         * Check, that in string only one zero in start of number
+         * @param text = stroke will be check
+         * @return stroke without more than one zero in start of number
+         */
         fun oneZero(text: String): String{
             var oneZer = false
             var act = false

@@ -108,8 +108,9 @@ class ButtonsLogic(
                     resultText.text = res
                 }
             }
-            toEnd(resultScrollView)
+
             toEnd(editScrollView)
+            toEnd(resultScrollView)
         }
 
     }
@@ -131,12 +132,13 @@ class ButtonsLogic(
 
             }
         }
-        toEnd(resultScrollView)
+
         toEnd(editScrollView)
+        toEnd(resultScrollView)
     }
 
     /**
-     *
+     * Set logic for plus button
      */
     private fun setPlusLogic(){
         var text = "${editText.text}+"
@@ -147,7 +149,7 @@ class ButtonsLogic(
     }
 
     /**
-     *
+     * Set logic for minus button
      */
     private fun setMinusLogic(){
         var text = "${editText.text}-"
@@ -157,7 +159,7 @@ class ButtonsLogic(
     }
 
     /**
-     *
+     * Set logic for multiply button
      */
     private fun setMultiplyLogic(){
         var text = "${editText.text}*"
@@ -167,7 +169,7 @@ class ButtonsLogic(
     }
 
     /**
-     *
+     * Set logic for divide button
      */
     private fun setDivideLogic(){
         var text = "${editText.text}/"
@@ -176,6 +178,9 @@ class ButtonsLogic(
         editText.text = text
     }
 
+    /**
+     * Set logic for left bracket button
+     */
     private fun setLeftBracketLogic(){
         var text = "${editText.text}"
         text += if (text.last() in EditGrammar.actions){
@@ -187,6 +192,9 @@ class ButtonsLogic(
         editText.text = text
     }
 
+    /**
+     * Set logic for right bracket button
+     */
     private fun setRightBracketLogic(){
         var text = "${editText.text}"
         if (text.last() in EditGrammar.actions){
@@ -199,6 +207,9 @@ class ButtonsLogic(
         editText.text = text
     }
 
+    /**
+     * Set logic for dot button
+     */
     private fun setDotLogic(){
         var text = "${editText.text}"
         text = EditGrammar.checkPlaceDot(text)
@@ -209,7 +220,9 @@ class ButtonsLogic(
         editText.text = text
     }
 
-
+    /**
+     * Set logic for degree button
+     */
     private fun setDegreeLogic(){
         var text = "${editText.text}^("
         text = EditGrammar.oneAction(text)
@@ -217,6 +230,9 @@ class ButtonsLogic(
         editText.text = text
     }
 
+    /**
+     * Set logic for sqr button
+     */
     fun setSqrLogic(){
         var text = "${editText.text}^(2)"
         text = EditGrammar.oneAction(text)
@@ -228,6 +244,9 @@ class ButtonsLogic(
         toEnd(resultScrollView)
     }
 
+    /**
+     * Set logic for sqrt button
+     */
     fun setSqrtLogic(){
         var text = "${editText.text}^(1/2)"
         text = EditGrammar.oneAction(text)
