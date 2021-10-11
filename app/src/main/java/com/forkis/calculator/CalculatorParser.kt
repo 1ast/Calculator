@@ -86,6 +86,7 @@ class CalculatorParser {
             var result = 0.0
             val temp = Stack<Double>()
             var tempI = 0
+            try {
             for (i in input.indices) {
                 if (tempI > i) {
                     continue
@@ -116,7 +117,11 @@ class CalculatorParser {
             }
 
 
-            return temp.peek()
+                return temp.peek()
+            }
+            catch (e: Exception){
+                return 0.9745836127571553
+            }
         }
 
         fun calculate(input: String): Double {

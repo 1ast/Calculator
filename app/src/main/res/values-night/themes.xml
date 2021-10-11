@@ -1,9 +1,9 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
     <!-- Base application theme. -->
-    <style name="Theme.Calculator" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
+    <style name="Theme.Calculator" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Primary brand color. -->
-        <item name="colorPrimary">@color/purple_200</item>
-        <item name="colorPrimaryVariant">@color/purple_700</item>
+        <item name="colorPrimary">#141414</item>
+        <item name="colorPrimaryVariant">#991856</item>
         <item name="colorOnPrimary">@color/black</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal_200</item>
@@ -12,5 +12,39 @@
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
+
+    </style>
+
+    <style name="NumbersButton">
+        <item name="colorSecondary">#141414</item>
+        <item name="colorOnSecondary">#141414</item>
+        <item name="colorOnSurface">#141414</item>
+    </style>
+
+    <style name="NumbersButton.Text">
+        <item name="android:textColor">#991856</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textSize">50sp</item>
+    </style>
+
+    <style name="ActionButton">
+        <item name="colorSecondary">#F4789D</item>
+        <item name="colorOnSecondary">#F4789D</item>
+        <item name="colorOnSurface">#F4789D</item>
+    </style>
+
+    <style name="ActionButton.Text">
+        <item name="android:textColor">#FFFFFF</item>
+        <item name="android:textAlignment">center</item>
+        <item name="android:textSize">50sp</item>
+        <item name="elevation">105dp</item>
+    </style>
+
+    <style name="Result">
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+
+    <style name="Coordinator">
+        <item name="android:background">#141414</item>
     </style>
 </resources>

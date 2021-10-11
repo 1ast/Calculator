@@ -2,6 +2,7 @@ package com.forkis.calculator
 
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.HorizontalScrollView
 import android.widget.LinearLayout
@@ -135,7 +136,6 @@ class MainActivity : AppCompatActivity() {
         bottomSheet = findViewById(R.id.bottomSheet)
 
         buttonsLogic = ButtonsLogic(editText, editScrollView, resultText, resultScrollView)
-
         setupBottomSheet()
         toEnd(editScrollView)
     }
@@ -152,12 +152,22 @@ class MainActivity : AppCompatActivity() {
         val bottomSheetCallback = object : BottomSheetBehavior.BottomSheetCallback(){
             override fun onStateChanged(bottomSheet: View, newState: Int) {
                 when(newState){
-                    BottomSheetBehavior.STATE_COLLAPSED -> slideView.setBackgroundColor(startColor)
+                    BottomSheetBehavior.STATE_COLLAPSED -> {
+                        slideView.setBackgroundColor(startColor)
+                        slideView.isClickable = false
+                    }
                     BottomSheetBehavior.STATE_SETTLING -> {}
                     BottomSheetBehavior.STATE_DRAGGING -> {}
-                    BottomSheetBehavior.STATE_EXPANDED -> {}
+                    BottomSheetBehavior.STATE_EXPANDED -> {
+                        slideView.setOnClickListener {
+                            slideView.isClickable = true
+                            bottomSheetBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
+                        }
+                    }
                     BottomSheetBehavior.STATE_HALF_EXPANDED -> {}
-                    BottomSheetBehavior.STATE_HIDDEN -> {}
+                    BottomSheetBehavior.STATE_HIDDEN -> {
+
+                    }
                 }
             }
 

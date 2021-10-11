@@ -1,5 +1,9 @@
 package com.forkis.calculator
 
+import com.forkis.calculator.CheckGrammar.Companion.isLastAction
+import com.forkis.calculator.CheckGrammar.Companion.isLastNumber
+import com.forkis.calculator.CheckGrammar.Companion.isLastOpenedBracket
+
 class EditGrammar {
 
 
@@ -78,32 +82,71 @@ class EditGrammar {
 
         fun checkPlaceDot(text: String): String{
             var result = text
-            if (text.last() in actions){
+            if (isLastAction(result) || isLastOpenedBracket(result)){
                 result+= "0."
             }
 
             return result
         }
 
+        fun checkPercent(text: String, action: Char, number: String): String{
+            var result = text
+            when (action){
+                '*', '/' -> result += "$action${clearDoubleFromZeros(number.toDouble()/100)}"
+                '^' -> result += "$action(${clearDoubleFromZeros(number.toDouble()/100)}"
+                '+', '-' -> {
+                    val res = ResultGrammar.clearResult("$result*${clearDoubleFromZeros(number.toDouble()/100)}")
+                    result = "$result$action$res"
+                }
+            }
+            return result
+        }
+
+        fun getLastAction(text: String): String{
+            var test = text
+            var result = ""
+            while (!isLastAction(test) && test.isNotEmpty()){
+                test = removeLast(test)
+            }
+            if (test.isNotEmpty()){
+                result += test.last()
+            }
+            return result
+        }
+
+        fun getLastNumber(text: String): String{
+            var test = text
+            var result = ""
+            while (!isLastNumber(test) && test.isNotEmpty()){
+                test = removeLast(test)
+            }
+            if (test.isNotEmpty()){
+                while (isLastNumber(text) && test.isNotEmpty()){
+                    result += test.last()
+                    test = removeLast(test)
+                }
+            }
+            result = result.reversed()
+            return result
+        }
+
+        fun clearDoubleFromZeros(number: Double): String{
+            var result = number.toString()
+            while (result.last() == '0'){
+                result = removeLast(result)
+            }
+            if (result.last() == '.'){
+                result = removeLast(result)
+            }
+            return result
+        }
+
         fun checkActionBracket(text: String): String {
             var result = text
-            var isBracket = false
-            var i = 0
-            while (i < result.length){
-                if(isBracket && result[i] == '^'){
-                    result = removeCharAt(result, i)
-                    result = removeCharAt(result, i+1)
-                    isBracket = false
-                    continue
-                } else if (isBracket && result[i] in actions){
-                    result = removeCharAt(result, i)
-                    isBracket = false
-                    continue
-                }
+            val isBracket = isLastOpenedBracket(result)
+            if (isBracket && result[result.length-1] in actions){
+                result = removeCharAt(result, result.length-1)
 
-
-                isBracket = result[i] == '('
-                i++
             }
             return result
         }
@@ -119,6 +162,10 @@ class EditGrammar {
                 0,
                 pos
             ) + s.substring(pos + 1)
+        }
+
+        fun removeLast(s: String): String{
+            return s.substring(0, s.length-1)
         }
     }
 }

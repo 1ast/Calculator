@@ -1,10 +1,16 @@
 package com.forkis.calculator
 
 import android.widget.HorizontalScrollView
+import com.forkis.calculator.CheckGrammar.Companion.isLastAction
+import com.forkis.calculator.CheckGrammar.Companion.isLastOpenedBracket
+import com.forkis.calculator.EditGrammar.Companion.checkActionBracket
+import com.forkis.calculator.EditGrammar.Companion.oneAction
 import com.forkis.calculator.MainActivity.Companion.toEnd
 import com.forkis.calculator.ResultGrammar.Companion.clearResult
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.textview.MaterialTextView
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import java.util.*
 
 /**
@@ -26,6 +32,11 @@ class ButtonsLogic(
         return "=$str"
     }
 
+    private fun end(){
+        toEnd(editScrollView)
+        toEnd(resultScrollView)
+    }
+
     /**
      * Create logic for buttons with numbers
      * @param button a button that add logic
@@ -38,13 +49,18 @@ class ButtonsLogic(
                 text = number.toString()
             else
                 text += number.toString()
+            var res = ""
+            runBlocking {
+                val job = launch {
+                    text = EditGrammar.checkInput(text)
+                    res = addEqual(clearResult(text))
 
-            text = EditGrammar.checkInput(text)
-            editText.text = text
-            val res = addEqual(clearResult(text))
-            resultText.text = res
-            toEnd(editScrollView)
-            toEnd(resultScrollView)
+                }
+                job.join()
+                editText.text = text
+                resultText.text = res
+                end()
+            }
         }
     }
 
@@ -57,8 +73,7 @@ class ButtonsLogic(
         button.setOnClickListener {
             editText.text = "0"
             resultText.text = "=0"
-            toEnd(editScrollView)
-            toEnd(resultScrollView)
+            end()
         }
     }
 
@@ -83,8 +98,7 @@ class ButtonsLogic(
                 else -> {}
 
             }
-            toEnd(resultScrollView)
-            toEnd(editScrollView)
+            end()
         }
     }
 
@@ -109,8 +123,7 @@ class ButtonsLogic(
                 }
             }
 
-            toEnd(editScrollView)
-            toEnd(resultScrollView)
+            end()
         }
 
     }
@@ -133,8 +146,7 @@ class ButtonsLogic(
             }
         }
 
-        toEnd(editScrollView)
-        toEnd(resultScrollView)
+        end()
     }
 
     /**
@@ -142,8 +154,8 @@ class ButtonsLogic(
      */
     private fun setPlusLogic(){
         var text = "${editText.text}+"
-        text = EditGrammar.oneAction(text)
-        text = EditGrammar.checkActionBracket(text)
+        text = oneAction(text)
+        text = checkActionBracket(text)
         editText.text = text
 
     }
@@ -153,8 +165,8 @@ class ButtonsLogic(
      */
     private fun setMinusLogic(){
         var text = "${editText.text}-"
-        text = EditGrammar.oneAction(text)
-        text = EditGrammar.checkActionBracket(text)
+        text = oneAction(text)
+        text = checkActionBracket(text)
         editText.text = text
     }
 
@@ -163,8 +175,8 @@ class ButtonsLogic(
      */
     private fun setMultiplyLogic(){
         var text = "${editText.text}*"
-        text = EditGrammar.oneAction(text)
-        text = EditGrammar.checkActionBracket(text)
+        text = oneAction(text)
+        text = checkActionBracket(text)
         editText.text = text
     }
 
@@ -173,8 +185,8 @@ class ButtonsLogic(
      */
     private fun setDivideLogic(){
         var text = "${editText.text}/"
-        text = EditGrammar.oneAction(text)
-        text = EditGrammar.checkActionBracket(text)
+        text = oneAction(text)
+        text = checkActionBracket(text)
         editText.text = text
     }
 
@@ -183,7 +195,11 @@ class ButtonsLogic(
      */
     private fun setLeftBracketLogic(){
         var text = "${editText.text}"
-        text += if (text.last() in EditGrammar.actions){
+        if (text == "0"){
+            editText.text = "("
+            return
+        }
+        text += if (isLastAction(text) || isLastOpenedBracket(text)){
             "("
         } else {
             "*("
@@ -224,9 +240,11 @@ class ButtonsLogic(
      * Set logic for degree button
      */
     private fun setDegreeLogic(){
-        var text = "${editText.text}^("
-        text = EditGrammar.oneAction(text)
-        text = EditGrammar.checkActionBracket(text)
+        var text = "${editText.text}"
+        text = oneAction(text)
+        if (!isLastOpenedBracket(text)){
+            text += "^("
+        }
         editText.text = text
     }
 
@@ -234,27 +252,29 @@ class ButtonsLogic(
      * Set logic for sqr button
      */
     fun setSqrLogic(){
-        var text = "${editText.text}^(2)"
-        text = EditGrammar.oneAction(text)
-        text = EditGrammar.checkActionBracket(text)
-        editText.text = text
-        val res = addEqual(clearResult(text))
-        resultText.text = res
-        toEnd(editScrollView)
-        toEnd(resultScrollView)
+        var text = "${editText.text}"
+        text = oneAction(text)
+        if (!isLastOpenedBracket(text)){
+            text += "^(2)"
+            editText.text = text
+            val res = addEqual(clearResult(text))
+            resultText.text = res
+            end()
+        }
     }
 
     /**
      * Set logic for sqrt button
      */
     fun setSqrtLogic(){
-        var text = "${editText.text}^(1/2)"
-        text = EditGrammar.oneAction(text)
-        text = EditGrammar.checkActionBracket(text)
-        editText.text = text
-        val res = addEqual(clearResult(text))
-        resultText.text = res
-        toEnd(editScrollView)
-        toEnd(resultScrollView)
+        var text = "${editText.text}"
+        text = oneAction(text)
+        if (!isLastOpenedBracket(text)){
+            text += "^(1/2)"
+            editText.text = text
+            val res = addEqual(clearResult(text))
+            resultText.text = res
+            end()
+        }
     }
 }

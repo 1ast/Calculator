@@ -9,11 +9,7 @@ class ResultGrammar {
          * */
         private fun clearResultFromType(text: String): String {
             val dirty = CalculatorParser.calculate(text)
-            return if (dirty.toString() == "${dirty.toInt()}.0"){
-                "${dirty.toInt()}"
-            } else {
-                dirty.toString()
-            }
+            return EditGrammar.clearDoubleFromZeros(dirty)
         }
 
         /**
@@ -88,6 +84,7 @@ class ResultGrammar {
             return result
         }
 
+
         /**
          * Clear result from type problems, infinity and NaN
          * @param text stroke, that needed to calculate
@@ -100,7 +97,7 @@ class ResultGrammar {
             result = clearLastAction(result)
 
             result = clearResultFromType(result)
-
+            if (result == "0.9745836127571553") return "Error"
             if(isInfinity(result)) result = "\u221E"
             if(isNaN(result)) result = "Error"
             return result
