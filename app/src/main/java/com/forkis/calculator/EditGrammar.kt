@@ -121,7 +121,7 @@ class EditGrammar {
                 test = removeLast(test)
             }
             if (test.isNotEmpty()){
-                while (isLastNumber(text) && test.isNotEmpty()){
+                while (isLastNumber(test) && test.isNotEmpty()){
                     result += test.last()
                     test = removeLast(test)
                 }
@@ -151,8 +151,16 @@ class EditGrammar {
             return result
         }
 
+        fun checkErr(text: String): String{
+            if (text == "Error"){
+                return ""
+            }
+            return text
+        }
+
         fun checkInput(text: String): String{
-            var res = oneZero(text)
+            var res = checkErr(text)
+            res = oneZero(res)
             res = oneAction(res)
             return res
         }

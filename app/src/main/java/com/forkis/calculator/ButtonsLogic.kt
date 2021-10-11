@@ -4,6 +4,8 @@ import android.widget.HorizontalScrollView
 import com.forkis.calculator.CheckGrammar.Companion.isLastAction
 import com.forkis.calculator.CheckGrammar.Companion.isLastOpenedBracket
 import com.forkis.calculator.EditGrammar.Companion.checkActionBracket
+import com.forkis.calculator.EditGrammar.Companion.checkErr
+import com.forkis.calculator.EditGrammar.Companion.checkPercent
 import com.forkis.calculator.EditGrammar.Companion.oneAction
 import com.forkis.calculator.MainActivity.Companion.toEnd
 import com.forkis.calculator.ResultGrammar.Companion.clearResult
@@ -45,6 +47,7 @@ class ButtonsLogic(
     fun setNumberLogic(button: FloatingActionButton, number: Int) {
         button.setOnClickListener {
             var text = editText.text.toString()
+            text = checkErr(text)
             if (text == "0")
                 text = number.toString()
             else
@@ -84,6 +87,10 @@ class ButtonsLogic(
      */
     fun setActionLogic(button: FloatingActionButton, action: Actions){
         button.setOnClickListener {
+            editText.text = checkErr(editText.text.toString())
+            if (editText.text == ""){
+                editText.text = "0"
+            }
             when(action){
                 Actions.Plus -> setPlusLogic()
                 Actions.Minus -> setMinusLogic()
@@ -95,9 +102,11 @@ class ButtonsLogic(
                 Actions.Degree -> setDegreeLogic()
                 Actions.Sqr -> setSqrLogic()
                 Actions.Sqrt -> setSqrtLogic()
+                Actions.Percent -> setPercentLogic()
                 else -> {}
 
             }
+
             end()
         }
     }
@@ -275,6 +284,22 @@ class ButtonsLogic(
             val res = addEqual(clearResult(text))
             resultText.text = res
             end()
+        }
+    }
+
+    fun setPercentLogic(){
+        var text = "${editText.text}"
+        if (!isLastAction(text)) {
+            val lastAction = EditGrammar.getLastAction(text)
+            val lastNumber = EditGrammar.getLastNumber(text)
+            val textWithoutNumbers = text.substring(0..(text.length-(lastAction.length+lastNumber.length+1)))
+            if (lastAction.isNotEmpty() && lastNumber.isNotEmpty() && textWithoutNumbers.isNotEmpty()){
+            text = checkPercent(textWithoutNumbers, lastAction.toCharArray()[0], lastNumber)
+            editText.text = text
+            val res = addEqual(clearResult(text))
+            resultText.text = res
+            end()
+            }
         }
     }
 }
